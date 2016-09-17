@@ -1,13 +1,24 @@
 $(function() {
 
-    var canvas = $("#canvas")[0];
-    var context = canvas.getContext("2d");
-    var canvasWidth = $("#canvas").width();
-    var canvasHeight = $("#canvas").height();
+    var characterCanvas = $("#characterCanvas")[0];
+    var characterCanvasContext = characterCanvas.getContext("2d");
+    var characterCanvasWidth = $("#characterCanvas").width();
+    var characterCanvasHeight = $("#characterCanvas").height();
+	
+	var boardCanvas = $("#boardCanvas")[0];
+	var boardCanvasContext = boardCanvas.getContext("2d");
+	var boardCanvasWidth = $("#boardCanvas").width();
+	var boardCanvasHeight = $("#boardCanvas").height();
+	
+	var boardPathColor = "#4d3800";
+	var pathWidth = 10;
+	var pathHeight = 10;
 
     var characterActing;
 	var action;
-    var cw = 15;
+	
+    var characterWidth = 15;
+	var characterHeight = 15;
 	
 	var characterDefaultFillColor = "blue";
 	var characterDefaultStrokeColor = "green";
@@ -21,22 +32,34 @@ $(function() {
     var characterPositionX = 15;
     var characterPositionY = 15;
 	
-	//////game board 40x40
+	var boardWidth = parseInt((characterCanvasWidth / characterWidth) - 1);
+	var boardHeight = parseInt((characterCanvasHeight / characterHeight) - 1)
 	
+	drawBoard();
 	
-	setInterval(gameLoop, 50);
+	setInterval(gameLoop, 25);
 	setDefaultCharacterColors();
 
 
-
-
-
-    function paintCharacter() {
-        context.fillStyle = characterCurrentFillColor;
-        context.fillRect(characterPositionX * cw, characterPositionY * cw, cw, cw);
-        context.strokeStyle = characterCurrentStrokeColor;
-        context.strokeRect(characterPositionX * cw, characterPositionY * cw, cw, cw);
+    function drawCharacter() {
+        characterCanvasContext.fillStyle = characterCurrentFillColor;
+        characterCanvasContext.fillRect(characterPositionX * characterWidth , characterPositionY * characterHeight, characterWidth, characterHeight);
+        characterCanvasContext.strokeStyle = characterCurrentStrokeColor;
+        characterCanvasContext.strokeRect(characterPositionX * characterWidth , characterPositionY * characterHeight, characterWidth, characterHeight);	
     }
+	
+	
+	function drawBoard() {
+		for(var i = 0; i < board.length; i++) {
+			var row = board[i];
+			for(var j = 0; j < row.length; j++) {
+				if(board[j][i] == 1){
+					boardCanvasContext.fillStyle = boardPathColor;
+					boardCanvasContext.fillRect(i * characterWidth , j * characterHeight, pathWidth, pathHeight);
+				}
+			}
+		}
+	}
 	
 	function setDefaultCharacterColors() {
 		characterCurrentFillColor = characterDefaultFillColor;
@@ -49,8 +72,8 @@ $(function() {
 	}
 	
 	function gameLoop() {
-		context.clearRect(0, 0, canvasWidth, canvasHeight);
-		paintCharacter();
+		characterCanvasContext.clearRect(0, 0, characterCanvasWidth, characterCanvasHeight);
+		drawCharacter();
 	}
 	
 	$(document).keydown(function(e) {
@@ -60,15 +83,15 @@ $(function() {
 	function controls(e) {
         var key = e.which;
         if(key == "87") {
-			if(isCharacterActing()) {
-				if(canMoveUp()){
+			if(isCharacterNotActing()) {
+				if(canMoveUp()) {
 					characterPositionY--;
 					action = "up";
 				}
 			}
         }
         else if(key == "83") {
-            if(isCharacterActing()) {
+            if(isCharacterNotActing()) {
 				if(canMoveDown()) {
 					characterPositionY++;
 					action = "down";
@@ -76,7 +99,7 @@ $(function() {
 			}
         }
         else if(key == "68") {
-			if(isCharacterActing()) {
+			if(isCharacterNotActing()) {
 				if(canMoveRight()) {
 					characterPositionX++;
 					action = "right";
@@ -84,7 +107,7 @@ $(function() {
 			}
         }
         else if(key == "65") {
-            if(isCharacterActing()) {
+            if(isCharacterNotActing()) {
 				if(canMoveLeft()) {
 					characterPositionX--;
 					action = "left";	
@@ -92,15 +115,18 @@ $(function() {
 			}
         }
         else if(key == "69") {
-			characterActing = true;
-			setActingCharacterColors();
-			setTimeout(function() {
-				setDefaultCharacterColors();
-				characterActing = false;
-			}, 3000);
+			if(isCharacterNotActing()) {
+				characterActing = true;
+				setActingCharacterColors();
+				setTimeout(function() {
+					setDefaultCharacterColors();
+					characterActing = false;
+				}, 3000);
+			}
+			
         }
 	}
-	function isCharacterActing(){
+	function isCharacterNotActing(){
 		if(characterActing) {
 			return false;
 		}
@@ -116,14 +142,14 @@ $(function() {
 	}
 	
 	function canMoveDown() {
-		if (characterPositionY == 39) {
+		if (characterPositionY == boardHeight) {
 			return false;
 		}
 		return true;
 	}
 	
 	function canMoveRight() {
-		if(characterPositionX == 39) {
+		if(characterPositionX == boardWidth) {
 			return false;
 		}
 		return true;
