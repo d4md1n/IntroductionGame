@@ -29,8 +29,8 @@ $(function() {
 	var characterCurrentFillColor;
 	var characterCurrentStrokeColor;
 
-    var characterPositionX = 15;
-    var characterPositionY = 15;
+    var characterPositionX = 1;
+    var characterPositionY = 2;
 	
 	var boardWidth = parseInt((characterCanvasWidth / characterWidth) - 1);
 	var boardHeight = parseInt((characterCanvasHeight / characterHeight) - 1)
@@ -53,9 +53,13 @@ $(function() {
 		for(var i = 0; i < board.length; i++) {
 			var row = board[i];
 			for(var j = 0; j < row.length; j++) {
-				if(board[j][i] == 1){
+				if(board[j][i] == "1"){
 					boardCanvasContext.fillStyle = boardPathColor;
 					boardCanvasContext.fillRect(i * characterWidth , j * characterHeight, pathWidth, pathHeight);
+				}
+				else if (typeof(dictionary[board[j][i]]) !== 'undefined') {
+					boardCanvasContext.font = "bold 15px Arial";
+					boardCanvasContext.fillText(dictionary[board[j][i]], i * characterWidth, j * characterHeight);
 				}
 			}
 		}
@@ -77,10 +81,6 @@ $(function() {
 	}
 	
 	$(document).keydown(function(e) {
-        controls(e);
-	})
-
-	function controls(e) {
         var key = e.which;
         if(key == "87") {
 			if(isCharacterNotActing()) {
@@ -125,7 +125,8 @@ $(function() {
 			}
 			
         }
-	}
+	});
+	
 	function isCharacterNotActing(){
 		if(characterActing) {
 			return false;
@@ -138,11 +139,19 @@ $(function() {
 		{
 			return false;
 		}
+		if(board[characterPositionY - 1][characterPositionX] != "1")
+		{
+			return false;
+		}
 		return true;
 	}
 	
 	function canMoveDown() {
 		if (characterPositionY == boardHeight) {
+			return false;
+		}
+		if(board[characterPositionY + 1][characterPositionX] != "1")
+		{
 			return false;
 		}
 		return true;
@@ -152,11 +161,19 @@ $(function() {
 		if(characterPositionX == boardWidth) {
 			return false;
 		}
+		if(board[characterPositionY][characterPositionX + 1] != "1")
+		{
+			return false;
+		}
 		return true;
 	}
 	
 	function canMoveLeft() {
 		if(characterPositionX == 0) {
+			return false;
+		}
+		if(board[characterPositionY][characterPositionX - 1] != "1")
+		{
 			return false;
 		}
 		return true;
