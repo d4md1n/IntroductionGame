@@ -2,56 +2,138 @@ $(function() {
 
     var canvas = $("#canvas")[0];
     var context = canvas.getContext("2d");
-    var width = $("#canvas").width();
-    var height = $("#canvas").height();
+    var canvasWidth = $("#canvas").width();
+    var canvasHeight = $("#canvas").height();
 
-    var action;
+    var characterActing;
+	var action;
     var cw = 15;
 	
-	var characterFillColor = "blue";
-	var characterStrokeColor = "green";
+	var characterDefaultFillColor = "blue";
+	var characterDefaultStrokeColor = "green";
+	
+	var characterActingFillColor = "orange";
+	var characterActingStrokeColor = "red";
+	
+	var characterCurrentFillColor;
+	var characterCurrentStrokeColor;
 
     var characterPositionX = 15;
     var characterPositionY = 15;
+	
+	//////game board 40x40
+	
+	
+	setInterval(gameLoop, 50);
+	setDefaultCharacterColors();
 
-    paintCharacter();
 
 
 
 
     function paintCharacter() {
-        context.fillStyle = characterFillColor;
+        context.fillStyle = characterCurrentFillColor;
         context.fillRect(characterPositionX * cw, characterPositionY * cw, cw, cw);
-        context.strokeStyle = characterStrokeColor;
+        context.strokeStyle = characterCurrentStrokeColor;
         context.strokeRect(characterPositionX * cw, characterPositionY * cw, cw, cw);
     }
-
+	
+	function setDefaultCharacterColors() {
+		characterCurrentFillColor = characterDefaultFillColor;
+		characterCurrentStrokeColor = characterDefaultStrokeColor;
+	}
+	
+	function setActingCharacterColors() {
+		characterCurrentFillColor = characterActingFillColor;
+		characterCurrentStrokeColor = characterActingStrokeColor;
+	}
+	
+	function gameLoop() {
+		context.clearRect(0, 0, canvasWidth, canvasHeight);
+		paintCharacter();
+	}
+	
 	$(document).keydown(function(e) {
         controls(e);
-		paintCharacter();
 	})
 
 	function controls(e) {
         var key = e.which;
         if(key == "87") {
-            action = "up";
-            characterPositionY--;
+			if(isCharacterActing()) {
+				if(canMoveUp()){
+					characterPositionY--;
+					action = "up";
+				}
+			}
         }
         else if(key == "83") {
-            action = "down";
-            characterPositionY++;
+            if(isCharacterActing()) {
+				if(canMoveDown()) {
+					characterPositionY++;
+					action = "down";
+				}
+			}
         }
         else if(key == "68") {
-            action = "right";
-            characterPositionX++;
+			if(isCharacterActing()) {
+				if(canMoveRight()) {
+					characterPositionX++;
+					action = "right";
+				}
+			}
         }
         else if(key == "65") {
-            action = "left";
-            characterPositionX--;
+            if(isCharacterActing()) {
+				if(canMoveLeft()) {
+					characterPositionX--;
+					action = "left";	
+				}
+			}
         }
         else if(key == "69") {
-            action = "use";
+			characterActing = true;
+			setActingCharacterColors();
+			setTimeout(function() {
+				setDefaultCharacterColors();
+				characterActing = false;
+			}, 3000);
         }
+	}
+	function isCharacterActing(){
+		if(characterActing) {
+			return false;
+		}
+		return true;
+	}
+	
+	function canMoveUp() {
+		if(characterPositionY == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	function canMoveDown() {
+		if (characterPositionY == 39) {
+			return false;
+		}
+		return true;
+	}
+	
+	function canMoveRight() {
+		if(characterPositionX == 39) {
+			return false;
+		}
+		return true;
+	}
+	
+	function canMoveLeft() {
+		if(characterPositionX == 0) {
+			return false;
+		}
+		return true;
 	}
 
 });
