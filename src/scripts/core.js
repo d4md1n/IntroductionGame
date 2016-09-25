@@ -11,6 +11,7 @@ $(function() {
 	var boardCanvasHeight = $("#boardCanvas").height();
 	
 	var boardPathColor = "#4d3800";
+	var boardTextColor = "#ffb84d";
 	var pathWidth = 10;
 	var pathHeight = 10;
 
@@ -30,12 +31,16 @@ $(function() {
 	var characterCurrentStrokeColor;
 
     var characterPositionX = 1;
-    var characterPositionY = 2;
+    var characterPositionY = 1;
 	
 	var boardWidth = parseInt((characterCanvasWidth / characterWidth) - 1);
 	var boardHeight = parseInt((characterCanvasHeight / characterHeight) - 1)
 	
+	var targetInactiveColor = "red";
+	var targetActiveColor = "#66cc00";
+	
 	drawBoard();
+	drawBoardText();
 	
 	setInterval(gameLoop, 25);
 	setDefaultCharacterColors();
@@ -57,11 +62,21 @@ $(function() {
 					boardCanvasContext.fillStyle = boardPathColor;
 					boardCanvasContext.fillRect(i * characterWidth , j * characterHeight, pathWidth, pathHeight);
 				}
-				else if (typeof(dictionary[board[j][i]]) !== 'undefined') {
-					boardCanvasContext.font = "bold 15px Arial";
-					boardCanvasContext.fillText(dictionary[board[j][i]], i * characterWidth, j * characterHeight);
+				else if (board[j][i] == "2") {
+					boardCanvasContext.fillStyle = targetInactiveColor;
+					boardCanvasContext.fillRect(i * characterWidth , j * characterHeight, pathWidth, pathHeight);
 				}
 			}
+		}
+	}
+	
+	function drawBoardText() {
+		var keys = Object.keys(dictionary);
+		for (var i = 0; i < keys.length; i++) {
+			var coordinates = keys[i].split(",");
+			boardCanvasContext.fillStyle = boardTextColor;
+			boardCanvasContext.font = "bold 11px Arial";
+			boardCanvasContext.fillText(dictionary[keys[i]], coordinates[0] * characterWidth, coordinates[1] * characterHeight);
 		}
 	}
 	

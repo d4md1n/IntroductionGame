@@ -1,5 +1,22 @@
 var dictionary = {
-	"t": "PROJECT INRODUCTION GAME",
-	"a": "api design",
-	"b": "speciment plugin"
+	"1,39" : "PROJECT INRODUCTION GAME",
+	"8,1" : "service",
+	"10,2" : "service-api-doc",
+	"10,4" : "service-application",
+	"12,5" : "service-plugin",
+	"12,7" : "service-web-application",
+	"14,8" : "src",
+	"16,9" : "main",
+	"18,10" : "java",
+	"18,12" : "resources",
+	"20,13" : "conf",
+	"22,14" : "cassandra",
+	"24,15" : "migration",
+	"24,17" : "wipe",
+	"22,19" : "spring",
+	"18,21" : "webapp",
+	"16,23" : "test",
+	"10,25" : "service-cassandra",
+	"10,27" : "service-functest",
+	"10,29" : "service-infra"
 }
